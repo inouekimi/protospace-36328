@@ -3,8 +3,8 @@ class PrototypesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   # ログインしていないユーザーをログインぺージに促す
   # index,showアクションは除外される
-  before_action :set_prototype, only: [:edit, :show, :update]
-  before_action :move_to_index, except: [:index, :show,]
+  before_action :set_prototype, only: [:edit, :show, :update, :destroy]
+  before_action :move_to_index, except: [:index, :show, :new, :create]
 
   def index
     @prototype = Prototype.all
@@ -25,7 +25,8 @@ class PrototypesController < ApplicationController
   
   def show
     @comment = Comment.new
-    @comments = Comment.all
+    @comments = @prototype.comments.includes(:user)
+    
   end
   
   def edit
@@ -58,6 +59,9 @@ class PrototypesController < ApplicationController
 
   def move_to_index
     unless @prototype.user.id == current_user.id
+          # 投稿者専用ページ == 投稿者(ログインユーザー)
+          # 投稿者(ログインユーザー)が投稿者専用ページではないページに遷移しようとした時は
+      # binding.pry
       redirect_to action: :index
     end
   end

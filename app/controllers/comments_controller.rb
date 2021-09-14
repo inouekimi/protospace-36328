@@ -12,6 +12,8 @@ class CommentsController < ApplicationController
       # 情報を更新してprototype_path(show.html.erb)に転送する
     else   
       @prototype = @comment.prototype
+      @comments = @prototype.comments.includes(:user)
+      # prototypeに紐付いているcomment
       render "prototypes/show"
     end
   end
